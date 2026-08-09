@@ -8,7 +8,15 @@
  ;; directly (not only under :dev) so a bare `clojure -M:test` works
  ;; offline inside the monorepo checkout without depending on
  ;; langgraph's own transitive git/sha pin being fetchable.
- :deps {io.github.kotoba-lang/langgraph
+ ;; jp-go-digital-design-system (DADS) is this workspace's BASE design
+ ;; system (com-junkawasaki/root CLAUDE.md, 2026-08-05); `jp-go-dds.skin`
+ ;; styles the build-time operator console without touching its markup.
+ ;; Pinned by git sha rather than :local/root so a standalone fork can
+ ;; still regenerate docs/samples/operator-console.html.
+ :deps {io.github.kotoba-lang/jp-go-digital-design-system
+        {:git/url "https://github.com/kotoba-lang/jp-go-digital-design-system"
+         :git/sha "83db99546eabc53613ae826ea41d1533a3c574af"}
+        io.github.kotoba-lang/langgraph
         {:local/root "../../kotoba-lang/langgraph"}
         io.github.kotoba-lang/langchain
         {:local/root "../../kotoba-lang/langchain"}}
@@ -21,6 +29,10 @@
          {:local/root "../../kotoba-lang/langchain"}}}
   ;; clojure -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "fluidpowermfg.sim"]}
+  ;; clojure -M:dev:render-html [out-file] -> regenerate
+  ;; docs/samples/operator-console.html by executing the REAL actor
+  ;; (flagship checklist item 2).
+  :render-html {:main-opts ["-m" "fluidpowermfg.render-html"]}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
