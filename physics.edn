@@ -1,0 +1,31 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README: the ISIC 2812 plant machines, assembles and pressure-tests
+;; hydraulic and pneumatic pumps, cylinders, valves and motors. The robots'
+;; physical work: running a pump's flow test on the hydraulic test bench
+;; (the return line's back pressure limits the flow the bench can take), and
+;; incoming tensile test of the piston-rod bar stock.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-2812"
+ :cases
+ [{:id :test-bench-return-line
+   :kind :pipe-flow
+   :procedure "pump flow test: the pump's delivery returns to the bench reservoir through an 8 m, 25 mm bore return line; ISO VG 46 oil at 40 C (46 mm2/s x 870 kg/m3 = 0.040 Pa.s)"
+   :params {:diameter-m 0.025 :length-m 8.0 :roughness-m 1.5e-6
+            :density-kg-m3 870.0 :viscosity-pa-s 0.040 :pump-efficiency 0.85 :elevation-m 0.0}
+   :sweep {:param :q-m3s :values [0.0005 0.001 0.0017 0.0025 0.0033]}
+   :quantity :pressure-drop-pa
+   :limit {:max 300000.0 :basis "estimate: 3 bar allowable back pressure on the bench's return filter and tank line; the viscosity is ISO 3448 VG 46 at 40 C"}
+   :boundary {:lo 0.0001 :hi 0.006}}
+  {:id :piston-rod-bar-tensile
+   :kind :material
+   :procedure "tensile test of a specimen (100 mm2) cut from incoming piston-rod bar stock before it is ground and chrome-plated"
+   :params {:length-m 0.10 :area-m2 1.0e-4 :youngs-modulus-pa 210.0e9 :hardening-pa 1.5e9
+            :density-kg-m3 7850.0 :max-force-n 70000.0}
+   :sweep {:param :yield-stress-pa :values [300.0e6 350.0e6 400.0e6 450.0e6 500.0e6]}
+   :quantity :yield-force-n
+   :limit {:min 38000.0 :basis "estimate: ~380 MPa minimum yield the cylinder's buckling and rod-end design was sized with"}
+   :boundary {:lo 250.0e6 :hi 600.0e6}}]}
