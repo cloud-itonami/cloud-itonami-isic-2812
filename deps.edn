@@ -9,7 +9,7 @@
  ;; offline inside the monorepo checkout without depending on
  ;; langgraph's own transitive git/sha pin being fetchable.
  ;; jp-go-digital-design-system (DADS) is this workspace's BASE design
- ;; system (com-junkawasaki/root CLAUDE.md, 2026-08-05); `jp-go-dds.skin`
+ ;; system (com-junkawasaki/root AGENTS.md, 2026-08-05); `jp-go-dds.skin`
  ;; styles the build-time operator console without touching its markup.
  ;; Pinned by git sha rather than :local/root so a standalone fork can
  ;; still regenerate docs/samples/operator-console.html.
